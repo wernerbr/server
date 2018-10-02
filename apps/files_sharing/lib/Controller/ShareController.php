@@ -61,7 +61,6 @@ use OCA\Files_Sharing\Activity\Providers\Downloads;
 use OCP\Files\NotFoundException;
 use OCP\Files\IRootFolder;
 use OCP\Share\Exceptions\ShareNotFound;
-use OCP\Util;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use OCP\Share\IManager as ShareManager;
@@ -306,27 +305,32 @@ class ShareController extends AuthPublicShareController {
 			throw $e;
 		}
 
+		$shareNode = $share->getNode();
+
 		$shareTmpl = [];
 		$shareTmpl['displayName'] = $this->userManager->get($share->getShareOwner())->getDisplayName();
 		$shareTmpl['owner'] = $share->getShareOwner();
-		$shareTmpl['filename'] = $share->getNode()->getName();
+		$shareTmpl['filename'] = $shareNode->getName();
 		$shareTmpl['directory_path'] = $share->getTarget();
 		$shareTmpl['note'] = $share->getNote();
-		$shareTmpl['mimetype'] = $share->getNode()->getMimetype();
-		$shareTmpl['previewSupported'] = $this->previewManager->isMimeSupported($share->getNode()->getMimetype());
+		$shareTmpl['mimetype'] = $shareNode->getMimetype();
+		$shareTmpl['previewSupported'] = $this->previewManager->isMimeSupported($shareNode->getMimetype());
 		$shareTmpl['dirToken'] = $this->getToken();
 		$shareTmpl['sharingToken'] = $this->getToken();
 		$shareTmpl['server2serversharing'] = $this->federatedShareProvider->isOutgoingServer2serverShareEnabled();
 		$shareTmpl['protected'] = $share->getPassword() !== null ? 'true' : 'false';
 		$shareTmpl['dir'] = '';
-		$shareTmpl['nonHumanFileSize'] = $share->getNode()->getSize();
-		$shareTmpl['fileSize'] = \OCP\Util::humanFileSize($share->getNode()->getSize());
+		$shareTmpl['nonHumanFileSize'] = $shareNode->getSize();
+		$shareTmpl['fileSize'] = \OCP\Util::humanFileSize($shareNode->getSize());
 
 		// Show file list
 		$hideFileList = false;
-		if ($share->getNode() instanceof \OCP\Files\Folder) {
+
+		$shareIsFolder = $shareNode instanceof \OCP\Files\Folder;
+
+		if ($shareIsFolder) {
 			/** @var \OCP\Files\Folder $rootFolder */
-			$rootFolder = $share->getNode();
+			$rootFolder = $shareNode;
 
 			try {
 				$folderNode = $rootFolder->get($path);
@@ -340,7 +344,7 @@ class ShareController extends AuthPublicShareController {
 			/*
 			 * The OC_Util methods require a view. This just uses the node API
 			 */
-			$freeSpace = $share->getNode()->getStorage()->free_space($share->getNode()->getInternalPath());
+			$freeSpace = $shareNode->getStorage()->free_space($shareNode->getInternalPath());
 			if ($freeSpace < \OCP\Files\FileInfo::SPACE_UNLIMITED) {
 				$freeSpace = max($freeSpace, 0);
 			} else {
@@ -383,7 +387,7 @@ class ShareController extends AuthPublicShareController {
 			$ogPreview = $shareTmpl['previewImage'];
 
 			// We just have direct previews for image files
-			if ($share->getNode()->getMimePart() === 'image') {
+			if ($shareNode->getMimePart() === 'image') {
 				$shareTmpl['previewURL'] = $this->urlGenerator->linkToRouteAbsolute('files_sharing.publicpreview.directLink', ['token' => $this->getToken()]);
 
 				$ogPreview = $shareTmpl['previewURL'];
@@ -444,12 +448,17 @@ class ShareController extends AuthPublicShareController {
 		$response = new PublicTemplateResponse($this->appName, 'public', $shareTmpl);
 		$response->setHeaderTitle($shareTmpl['filename']);
 		$response->setHeaderDetails($this->l10n->t('shared by %s', [$shareTmpl['displayName']]));
-		$response->setHeaderActions([
-			new SimpleMenuAction('download', $this->l10n->t('Download'), 'icon-download-white', $shareTmpl['downloadURL'], 0),
-			new SimpleMenuAction('download', $this->l10n->t('Download'), 'icon-download', $shareTmpl['downloadURL'], 10, $shareTmpl['fileSize']),
-			new LinkMenuAction($this->l10n->t('Direct link'), 'icon-public', $shareTmpl['previewURL']),
-			new ExternalShareMenuAction($this->l10n->t('Add to your Nextcloud'), 'icon-external', $shareTmpl['owner'], $shareTmpl['displayName'], $shareTmpl['filename']),
-		]);
+
+		$isNoneFileDropFolder = $shareIsFolder === false || $share->getPermissions() !== \OCP\Constants::PERMISSION_CREATE;
+
+		if ($isNoneFileDropFolder) {
+			$response->setHeaderActions([
+				new SimpleMenuAction('download', $this->l10n->t('Download'), 'icon-download-white', $shareTmpl['downloadURL'], 0),
+				new SimpleMenuAction('download', $this->l10n->t('Download'), 'icon-download', $shareTmpl['downloadURL'], 10, $shareTmpl['fileSize']),
+				new LinkMenuAction($this->l10n->t('Direct link'), 'icon-public', $shareTmpl['previewURL']),
+				new ExternalShareMenuAction($this->l10n->t('Add to your Nextcloud'), 'icon-external', $shareTmpl['owner'], $shareTmpl['displayName'], $shareTmpl['filename']),
+			]);
+		}
 
 		$response->setContentSecurityPolicy($csp);
 
