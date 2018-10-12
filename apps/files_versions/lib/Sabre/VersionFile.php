@@ -21,9 +21,12 @@ declare(strict_types=1);
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\Files_Versions\Sabre;
 
 use OCA\Files_Versions\Storage;
+use OCA\Files_Versions\Versions\IVersion;
+use OCA\Files_Versions\Versions\IVersionManager;
 use OCP\Files\File;
 use OCP\Files\Folder;
 use OCP\Files\NotFoundException;
@@ -32,15 +35,15 @@ use Sabre\DAV\Exception\NotFound;
 use Sabre\DAV\IFile;
 
 class VersionFile implements IFile {
-	/** @var array */
-	private $data;
+	/** @var IVersion */
+	private $version;
 
-	/** @var Folder */
-	private $userRoot;
+	/** @var IVersionManager */
+	private $versionManager;
 
-	public function __construct(array $data, Folder $userRoot) {
-		$this->data = $data;
-		$this->userRoot = $userRoot;
+	public function __construct(IVersion $version, IVersionManager $versionManager) {
+		$this->version = $version;
+		$this->versionManager = $versionManager;
 	}
 
 	public function put($data) {
@@ -49,10 +52,7 @@ class VersionFile implements IFile {
 
 	public function get() {
 		try {
-			/** @var Folder $versions */
-			$versions = $this->userRoot->get('files_versions');
-			/** @var File $version */
-			$version = $versions->get($this->data['path'].'.v'.$this->data['version']);
+			return $this->versionManager->read($this->version);
 		} catch (NotFoundException $e) {
 			throw new NotFound();
 		}
@@ -61,15 +61,15 @@ class VersionFile implements IFile {
 	}
 
 	public function getContentType(): string {
-		return $this->data['mimetype'];
+		return $this->version->getMimeType();
 	}
 
 	public function getETag(): string {
-		return $this->data['version'];
+		return (string)$this->version->getRevisionId();
 	}
 
 	public function getSize(): int {
-		return $this->data['size'];
+		return $this->version->getSize();
 	}
 
 	public function delete() {
@@ -77,7 +77,7 @@ class VersionFile implements IFile {
 	}
 
 	public function getName(): string {
-		return $this->data['version'];
+		return (string)$this->version->getRevisionId();
 	}
 
 	public function setName($name) {
@@ -85,10 +85,10 @@ class VersionFile implements IFile {
 	}
 
 	public function getLastModified(): int {
-		return (int)$this->data['version'];
+		return $this->version->getTimestamp();
 	}
 
-	public function rollBack(): bool {
-		return Storage::rollback($this->data['path'], $this->data['version']);
+	public function rollBack() {
+		$this->versionManager->rollback($this->version);
 	}
 }
