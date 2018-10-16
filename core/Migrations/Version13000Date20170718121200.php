@@ -397,6 +397,10 @@ class Version13000Date20170718121200 extends SimpleMigrationStep {
 				'notnull' => false,
 				'length' => 64,
 			]);
+			$table->addColumn('label', 'string', [
+				'notnull' => false,
+				'length' => 255,
+			]);
 			$table->setPrimaryKey(['id']);
 			$table->addIndex(['item_type', 'share_type'], 'item_share_type_index');
 			$table->addIndex(['file_source'], 'file_source_index');

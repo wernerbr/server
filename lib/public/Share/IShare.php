@@ -258,6 +258,22 @@ interface IShare {
 	public function getExpirationDate();
 
 	/**
+	 * set a label for a share, some shares, e.g. public links can have a label
+	 *
+	 * @param $label
+	 * @since 15.0.0
+	 */
+	public function setLabel($label);
+
+	/**
+	 * get label for the share, some shares, e.g. public links can have a label
+	 *
+	 * @return string
+	 * @since 15.0.0
+	 */
+	public function getLabel();
+
+	/**
 	 * Set the sharer of the path.
 	 *
 	 * @param string $sharedBy
