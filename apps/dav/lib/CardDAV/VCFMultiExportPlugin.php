@@ -42,7 +42,7 @@ class VCFMultiExportPlugin extends DAV\ServerPlugin {
 	 */
 	public function initialize(Server $server) {
 		$this->server = $server;
-		$this->server->on('afterMethod:REPORT', [$this, 'httpGet'], 90);
+		$this->server->on('afterMethod:REPORT', [$this, 'httpReport'], 90);
 	}
 
 	/**
@@ -52,7 +52,7 @@ class VCFMultiExportPlugin extends DAV\ServerPlugin {
 	 * @param ResponseInterface $response
 	 * @return bool
 	 */
-	public function httpGet(RequestInterface $request, ResponseInterface $response) {
+	public function httpReport(RequestInterface $request, ResponseInterface $response) {
 
 		$queryParams = $request->getQueryParameters();
 		if (!array_key_exists('export', $queryParams)) {
