@@ -100,7 +100,7 @@
 		defaults: {
 			allowPublicUploadStatus: false,
 			permissions: 0,
-			linkShare: {}
+			linkShares: []
 		},
 
 		/**
@@ -130,8 +130,11 @@
 				delete attributes.expiration;
 			}
 
-			if (this.get('linkShare') && this.get('linkShare').isLinkShare) {
-				shareId = this.get('linkShare').id;
+			var linkShares = this.get('linkShares');
+			var shareIndex = _.findIndex(linkShares, function(share) {return share.id === attributes.cid})
+
+			if (linkShares.length > 0 && shareIndex !== -1) {
+				shareId = linkShares[shareIndex].id;
 
 				// note: update can only update a single value at a time
 				call = this.updateShare(shareId, attributes, options);
@@ -149,12 +152,6 @@
 			}
 
 			return call;
-		},
-
-		removeLinkShare: function() {
-			if (this.get('linkShare')) {
-				return this.removeShare(this.get('linkShare').id);
-			}
 		},
 
 		addShare: function(attributes, options) {
@@ -316,13 +313,13 @@
 		},
 
 		/**
-		 * Returns whether this item has a link share
+		 * Returns whether this item has link shares
 		 *
 		 * @return {bool} true if a link share exists, false otherwise
 		 */
-		hasLinkShare: function() {
-			var linkShare = this.get('linkShare');
-			if (linkShare && linkShare.isLinkShare) {
+		hasLinkShares: function() {
+			var linkShares = this.get('linkShares');
+			if (linkShares && linkShares.length > 0) {
 				return true;
 			}
 			return false;
@@ -630,12 +627,13 @@
 		/**
 		 * @returns {int}
 		 */
-		linkSharePermissions: function() {
-			if (!this.hasLinkShare()) {
+		linkSharePermissions: function(shareId) {
+			if (!this.hasLinkShares()) {
 				return -1;
-			} else {
-				return this.get('linkShare').permissions;
+			} else if (this.get('linkShares')[shareId]) {
+				return this.get('linkShares')[shareId].permissions;
 			}
+			return -1;
 		},
 
 		_getUrl: function(base, params) {
@@ -831,7 +829,7 @@
 
 			this._legacyFillCurrentShares(shares);
 
-			var linkShare = { isLinkShare: false };
+			var linkShares =  [];
 			// filter out the share by link
 			shares = _.reject(shares,
 				/**
@@ -868,9 +866,6 @@
 							isLinkShare: true,
 							id: share.id,
 							token: share.token,
-							// hide_download is returned as an int, so force it
-							// to a boolean
-							hideDownload: !!share.hide_download,
 							password: share.share_with,
 							link: link,
 							permissions: share.permissions,
@@ -888,7 +883,7 @@
 			return {
 				reshare: data.reshare,
 				shares: shares,
-				linkShare: linkShare,
+				linkShares: linkShares,
 				permissions: permissions,
 				allowPublicUploadStatus: allowPublicUploadStatus,
 				allowPublicEditingStatus: allowPublicEditingStatus,
@@ -924,7 +919,7 @@
 		getShareTypes: function() {
 			var result;
 			result = _.pluck(this.getSharesWithCurrentItem(), 'share_type');
-			if (this.hasLinkShare()) {
+			if (this.hasLinkShares()) {
 				result.push(OC.Share.SHARE_TYPE_LINK);
 			}
 			return _.uniq(result);
