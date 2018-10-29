@@ -102,7 +102,6 @@
 			var clipboard = new Clipboard('.clipboardButton');
 			clipboard.on('success', function(e) {
 				var $menu = $(e.trigger);
-				var $linkTextMenu = $menu.parent().next('li.linkTextMenu')
 
 				$menu.tooltip('hide')
 					.attr('data-original-title', t('core', 'Copied!'))
@@ -147,6 +146,7 @@
 			var $element = $(event.target);
 			var $li = $element.closest('li[data-share-id]');
 			var $el = $li.find('.linkText');
+			console.log($element);
 			$el.focus();
 			$el.select();
 		},
@@ -169,16 +169,16 @@
 			var $element = $(event.target);
 			var $li = $element.closest('li[data-share-id]');
 			var shareId = $li.data('share-id');
-			this.$li.find('.linkPass').slideToggle(OC.menuSpeed);
-			this.$li.find('.linkPassMenu').toggleClass('hidden');
-			if(!this.$li.find('.showPasswordCheckbox').is(':checked')) {
+			$li.find('.linkPass').slideToggle(OC.menuSpeed);
+			$li.find('.linkPassMenu').toggleClass('hidden');
+			if(!$li.find('.showPasswordCheckbox').is(':checked')) {
 				this.model.saveLinkShare({
 					password: '',
 					cid: shareId
 				});
 			} else {
 				if (!OC.Util.isIE()) {
-					this.$li.find('.linkPassText').focus();
+					$li.find('.linkPassText').focus();
 				}
 			}
 		},
@@ -460,8 +460,8 @@
 			var linkShares = this.getShareeList();
 			if(_.isArray(linkShares)) {
 				for (var i = 0; i < linkShares.length; i++) {
-					var popover = this.getPendingPopoverObject(linkShares[i])
-					var pendingPopover = this.getPopoverObject(linkShares[i])
+					var popover = this.getPopoverObject(linkShares[i])
+					var pendingPopover = this.getPendingPopoverObject(linkShares[i])
 					linkShares[i].popoverMenu = this.popoverMenuTemplate(_.extend({}, popoverBase, popover));
 					linkShares[i].pendingPopoverMenu = this.pendingPopoverMenuTemplate(_.extend({}, pendingPopoverBase, pendingPopover));
 				}
@@ -692,6 +692,7 @@
 				hasExpireDate: hasExpireDate,
 				expireDate: expireDate,
 				shareNote: share.note,
+				hasNote: share.note !== '',
 				maxDate: maxDate
 			}
 		},

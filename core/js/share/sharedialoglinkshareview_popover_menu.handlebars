@@ -1,10 +1,10 @@
 <div class="popovermenu menu">
 	<ul>
 		<li>
-			<a href="#" class="menuitem clipboardButton" data-clipboard-text="{{shareLinkURL}}">
+			<button class="menuitem clipboardButton" data-clipboard-text="{{shareLinkURL}}">
 				<span class="icon icon-clippy" ></span>
 				<span>{{copyLabel}}</span>
-			</a>
+			</button>
 		</li>
 		<li class="hidden linkTextMenu">
 			<span class="menuitem icon-link-text">
@@ -89,7 +89,7 @@
 				<input type="button" class="share-note-delete icon-delete">
 			</a>
 		</li>
-		<li class="share-note-form share-note-link hidden">
+		<li class="share-note-form share-note-link {{#unless hasNote}}hidden{{/unless}}">
 			<span class="menuitem icon-note">
 				<textarea class="share-note">{{shareNote}}</textarea>
 				<input type="submit" class="icon-confirm share-note-submit" value="" id="add-note-{{shareId}}" />
