@@ -495,7 +495,9 @@ class Encryption extends Wrapper {
 	 * read first block to skip the header
 	 */
 	protected function skipHeader() {
-		parent::stream_read($this->headerSize);
+		if ($this->headerSize > 0) {
+			parent::stream_read($this->headerSize);
+		}
 	}
 
 	/**
