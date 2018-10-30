@@ -86,6 +86,7 @@
 			var shareType = this.model.getShareType(shareIndex);
 			var sharedBy = this.model.getSharedBy(shareIndex);
 			var sharedByDisplayName = this.model.getSharedByDisplayName(shareIndex);
+			var fileOwnerUid = this.model.getFileOwnerUid(shareIndex);
 
 			var hasPermissionOverride = {};
 			if (shareType === OC.Share.SHARE_TYPE_GROUP) {
@@ -141,6 +142,8 @@
 				hasCreatePermission: this.model.hasCreatePermission(shareIndex),
 				hasUpdatePermission: this.model.hasUpdatePermission(shareIndex),
 				hasDeletePermission: this.model.hasDeletePermission(shareIndex),
+				sharedBy: sharedBy,
+				sharedByDisplayName: sharedByDisplayName,
 				shareWith: shareWith,
 				shareWithDisplayName: shareWithDisplayName,
 				shareWithAvatar: shareWithAvatar,
@@ -148,6 +151,8 @@
 				shareType: shareType,
 				shareId: this.model.get('shares')[shareIndex].id,
 				modSeed: shareWithAvatar || (shareType !== OC.Share.SHARE_TYPE_USER && shareType !== OC.Share.SHARE_TYPE_CIRCLE && shareType !== OC.Share.SHARE_TYPE_ROOM),
+				owner: fileOwnerUid,
+				canUpdateShareSettings: (sharedBy === oc_current_user || fileOwnerUid === oc_current_user),
 				isRemoteShare: shareType === OC.Share.SHARE_TYPE_REMOTE,
 				isRemoteGroupShare: shareType === OC.Share.SHARE_TYPE_REMOTE_GROUP,
 				isNoteAvailable: shareType !== OC.Share.SHARE_TYPE_REMOTE && shareType !== OC.Share.SHARE_TYPE_REMOTE_GROUP,
