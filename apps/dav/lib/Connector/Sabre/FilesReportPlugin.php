@@ -344,6 +344,7 @@ class FilesReportPlugin extends ServerPlugin {
 	}
 
 	/**
+	 * @suppress PhanUndeclaredClassMethod
 	 * @param array $circlesIds
 	 * @return array
 	 */

@@ -401,6 +401,7 @@ class Principal implements BackendInterface {
 	}
 
 	/**
+	 * @suppress PhanUndeclaredClassMethod
 	 * @param string $circleUniqueId
 	 * @return array|null
 	 * @throws \OCP\AppFramework\QueryException
@@ -427,6 +428,7 @@ class Principal implements BackendInterface {
 	/**
 	 * Returns the list of circles a principal is a member of
 	 *
+	 * @suppress PhanUndeclaredClassMethod
 	 * @param string $principal
 	 * @return array
 	 * @throws Exception
