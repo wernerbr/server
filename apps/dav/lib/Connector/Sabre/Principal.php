@@ -34,6 +34,7 @@
 
 namespace OCA\DAV\Connector\Sabre;
 
+use OCP\AppFramework\QueryException;
 use OCP\IConfig;
 use OCP\IGroup;
 use OCP\IGroupManager;
@@ -42,7 +43,7 @@ use OCP\IUserManager;
 use OCP\IUserSession;
 use OCP\Share\IManager as IShareManager;
 use Sabre\DAV\Exception;
-use \Sabre\DAV\PropPatch;
+use Sabre\DAV\PropPatch;
 use Sabre\DAVACL\PrincipalBackend\BackendInterface;
 
 class Principal implements BackendInterface {
@@ -137,7 +138,11 @@ class Principal implements BackendInterface {
 				return $this->userToPrincipal($user);
 			}
 		} else if ($prefix === 'principals/circles') {
-			return $this->circleToPrincipal($name);
+			try {
+				return $this->circleToPrincipal($name);
+			} catch (QueryException $e) {
+				return null;
+			}
 		}
 		return null;
 	}
@@ -398,6 +403,7 @@ class Principal implements BackendInterface {
 	/**
 	 * @param string $circleUniqueId
 	 * @return array|null
+	 * @throws \OCP\AppFramework\QueryException
 	 */
 	protected function circleToPrincipal($circleUniqueId) {
 		if (!\OC::$server->getAppManager()->isEnabledForUser('circles') || !class_exists('\OCA\Circles\ShareByCircleProvider')) {
@@ -424,14 +430,14 @@ class Principal implements BackendInterface {
 	 * @param string $principal
 	 * @return array
 	 * @throws Exception
+	 * @throws \OCP\AppFramework\QueryException
 	 */
 	public function getCircleMembership($principal) {
 		if (!\OC::$server->getAppManager()->isEnabledForUser('circles') || !class_exists('\OCA\Circles\ShareByCircleProvider')) {
 			return [];
 		}
 
-		list($prefix, $name) = URLUtil::splitPath($principal);
-
+		list($prefix, $name) = \Sabre\Uri\split($principal);
 		if ($this->hasCircles && $prefix === $this->principalPrefix) {
 			$user = $this->userManager->get($name);
 			if (!$user) {
@@ -440,7 +446,7 @@ class Principal implements BackendInterface {
 
 			$circles = \OCA\Circles\Api\v1\Circles::joinedCircles($user->getUID());
 			$circles = array_map(function ($circle) {
-				/** @var \OCA\Circles\Model\Circle $group */
+				/** @var \OCA\Circles\Model\Circle $circle */
 				return 'principals/circles/' . urlencode($circle->getUniqueId());
 			}, $circles);
 
