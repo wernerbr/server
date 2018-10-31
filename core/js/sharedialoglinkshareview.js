@@ -69,7 +69,7 @@
 			// remove
 			'click .unshare': 'onUnshare',
 			// new share
-			'click .icon-add': 'newShare',
+			'click .new-share': 'newShare',
 		},
 
 		initialize: function(options) {
@@ -531,11 +531,6 @@
 			var $menu = $li.find('.sharingOptionsGroup .popovermenu');
 			var shareId = $li.data('share-id');
 
-			var linkShares = this.model.get('linkShares');
-			var shareIndex = _.findIndex(linkShares, function(share) {return share.id === shareId})
-			
-			console.log(this, linkShares[shareIndex])
-
 			OC.showMenu(null, $menu);
 			this._menuOpen = shareId;
 		},
@@ -643,8 +638,6 @@
 		getShareeList: function() {
 			var shares = this.model.get('linkShares');
 
-			console.log(this, shares);
-
 			if(!this.model.hasLinkShares()) {
 				return [];
 			}
@@ -728,7 +721,6 @@
 					maxDate = new Date(shareTime + defaultExpireDays * 24 * 3600 * 1000);
 				}
 			}
-			console.log(share);
 
 			return {
 				cid: share.id,
@@ -746,6 +738,7 @@
 				maxDate: maxDate,
 				showHideDownloadCheckbox: showHideDownloadCheckbox,
 				hideDownload: hideDownload,
+				newShareTitle: t('core', 'New share link'),
 			}
 		},
 
@@ -785,15 +778,16 @@
 
 			var shareId = $li.data('share-id');
 
-			self.model.removeShare(shareId)
-				.done(function() {
+			self.model.removeShare(shareId, {
+				success: function() {
 					$li.remove();
 					self.render()
-				})
-				.fail(function() {
+				},
+				error: function() {
 					$loading.addClass('hidden');
 					OC.Notification.showTemporary(t('core', 'Could not unshare'));
-				});
+				}
+			});
 			return false;
 		},
 

@@ -196,7 +196,8 @@
 		white-space: nowrap;
 
 		// icons
-		.icon:not(.hidden) {
+		> .icon:not(.hidden),
+		.share-menu > .icon:not(.hidden) {
 			padding: 14px;
 			height: 44px;
 			width: 44px;

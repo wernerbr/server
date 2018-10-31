@@ -12,7 +12,7 @@ templates['sharedialoglinkshareview'] = template({"1":function(container,depth0,
 
   return "		<li>\n			<div class=\"avatar icon-public-white\"></div>\n			<span class=\"username\">"
     + alias4(((helper = (helper = helpers.newShareLabel || (depth0 != null ? depth0.newShareLabel : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"newShareLabel","hash":{},"data":data}) : helper)))
-    + "</span>\n			<span class=\"sharingOptionsGroup\">\n				<span class=\"icon icon-add\" title=\""
+    + "</span>\n			<span class=\"sharingOptionsGroup\">\n				<span class=\"icon icon-add new-share\" title=\""
     + alias4(((helper = (helper = helpers.newShareTitle || (depth0 != null ? depth0.newShareTitle : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"newShareTitle","hash":{},"data":data}) : helper)))
     + "\"></span>\n				<span class=\"icon icon-loading-small hidden\"></span>\n			</span>\n		</li>\n";
 },"4":function(container,depth0,helpers,partials,data) {
@@ -168,6 +168,8 @@ templates['sharedialoglinkshareview_popover_menu'] = template({"1":function(cont
     + alias4(((helper = (helper = helpers.shareLinkURL || (depth0 != null ? depth0.shareLinkURL : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"shareLinkURL","hash":{},"data":data}) : helper)))
     + "\">\n				<span class=\"icon icon-clippy\" ></span>\n				<span>"
     + alias4(((helper = (helper = helpers.copyLabel || (depth0 != null ? depth0.copyLabel : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"copyLabel","hash":{},"data":data}) : helper)))
+    + "</span>\n			</a>\n		</li>\n		<li>\n			<a href=\"#\" class=\"new-share\">\n				<span class=\"icon-loading-small hidden\"></span>\n				<span class=\"icon icon-add\"></span>\n				<span>"
+    + alias4(((helper = (helper = helpers.newShareTitle || (depth0 != null ? depth0.newShareTitle : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"newShareTitle","hash":{},"data":data}) : helper)))
     + "</span>\n			</a>\n		</li>\n		<li class=\"hidden linkTextMenu\">\n			<span class=\"menuitem icon-link-text\">\n				<input id=\"linkText-"
     + alias4(((helper = (helper = helpers.cid || (depth0 != null ? depth0.cid : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"cid","hash":{},"data":data}) : helper)))
     + "\" class=\"linkText\" type=\"text\" readonly=\"readonly\" value=\""
