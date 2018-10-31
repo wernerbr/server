@@ -164,7 +164,16 @@
 			this.$el.find('.icon').addClass('hidden');
 			$loading.removeClass('hidden');
 
-			this.model.saveLinkShare({}, {
+			var shareData = {}
+
+			var isExpirationEnforced = this.configModel.get('isDefaultExpireDateEnforced');
+			if (isExpirationEnforced) {
+				var defaultExpireDays = this.configModel.get('defaultExpireDate');
+				var expireDate = moment().add(defaultExpireDays, 'day').format('DD-MM-YYYY')
+				shareData.expireDate = expireDate;
+			}
+
+			this.model.saveLinkShare(shareData, {
 				success: function() {
 					$loading.addClass('hidden');
 					self.$el.find('.icon').removeClass('hidden');
@@ -489,7 +498,7 @@
 				publicUploadRWValue: OC.PERMISSION_UPDATE | OC.PERMISSION_CREATE | OC.PERMISSION_READ | OC.PERMISSION_DELETE,
 				publicUploadRValue: OC.PERMISSION_READ,
 				publicUploadWValue: OC.PERMISSION_CREATE,
-				expireDateLabel: t('core', 'Set expiration date'),
+				expireDateLabel: isExpirationEnforced ? t('core', 'Expiration date enforced') : t('core', 'Set expiration date'),
 				expirationLabel: t('core', 'Expiration'),
 				expirationDatePlaceholder: t('core', 'Expiration date'),
 				isExpirationEnforced: isExpirationEnforced,
@@ -708,7 +717,6 @@
 			var isExpirationEnforced = this.configModel.get('isDefaultExpireDateEnforced');
 			var defaultExpireDays = this.configModel.get('defaultExpireDate');
 			var hasExpireDate = !!share.expiration || isExpirationEnforced;
-			var hasExpireDate = false;
 
 			var expireDate;
 			if (hasExpireDate) {
@@ -751,6 +759,7 @@
 				maxDate: maxDate,
 				showHideDownloadCheckbox: showHideDownloadCheckbox,
 				hideDownload: hideDownload,
+				isExpirationEnforced: isExpirationEnforced,
 			}
 		},
 
