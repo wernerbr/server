@@ -1,5 +1,6 @@
 <ul id="shareWithList" class="shareWithList">
 	{{#each sharees}}
+        {{#if !isShareWithCurrentUser}}
 		<li data-share-id="{{shareId}}" data-share-type="{{shareType}}" data-share-with="{{shareWith}}">
 			<div class="avatar {{#if modSeed}}imageplaceholderseed{{/if}}" data-username="{{shareWith}}" data-avatar="{{shareWithAvatar}}" data-displayname="{{shareWithDisplayName}}" {{#if modSeed}}data-seed="{{shareWith}} {{shareType}}"{{/if}}></div>
 			<span class="username" title="{{shareWithTitle}}">{{shareWithDisplayName}}</span>
@@ -17,7 +18,8 @@
 			</span>
 			{{/if}}
 		</li>
-		{{/each}}
+		{{/if}}
+    {{/each}}
 	{{#each linkReshares}}
 		<li data-share-id="{{shareId}}" data-share-type="{{shareType}}">
 			<div class="avatar" data-username="{{shareInitiator}}"></div>
