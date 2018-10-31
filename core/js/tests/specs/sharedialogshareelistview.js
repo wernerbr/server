@@ -98,6 +98,7 @@ describe('OC.Share.ShareDialogShareeListView', function () {
 				share_type: OC.Share.SHARE_TYPE_USER,
 				share_with: 'user1',
 				share_with_displayname: 'User One',
+				uid_owner: oc_current_user,
 				itemType: 'folder'
 			}]);
 			shareModel.set('itemType', 'folder');
@@ -113,6 +114,7 @@ describe('OC.Share.ShareDialogShareeListView', function () {
 				share_type: OC.Share.SHARE_TYPE_USER,
 				share_with: 'user _.@-\'',
 				share_with_displayname: 'User One',
+				uid_owner: oc_current_user,
 				itemType: 'folder'
 			}]);
 			shareModel.set('itemType', 'folder');
@@ -128,6 +130,7 @@ describe('OC.Share.ShareDialogShareeListView', function () {
 				share_type: OC.Share.SHARE_TYPE_USER,
 				share_with: 'user1',
 				share_with_displayname: 'User One',
+				uid_owner: oc_current_user,
 				itemType: 'folder'
 			}]);
 			shareModel.set('itemType', 'folder');
@@ -143,6 +146,7 @@ describe('OC.Share.ShareDialogShareeListView', function () {
 				share_type: OC.Share.SHARE_TYPE_USER,
 				share_with: 'user _.@-\'',
 				share_with_displayname: 'User One',
+				uid_owner: oc_current_user,
 				itemType: 'folder'
 			}]);
 			shareModel.set('itemType', 'folder');
@@ -158,7 +162,8 @@ describe('OC.Share.ShareDialogShareeListView', function () {
 				permissions: 1,
 				share_type: OC.Share.SHARE_TYPE_USER,
 				share_with: 'user1',
-				share_with_displayname: 'User One'
+				share_with_displayname: 'User One',
+				uid_owner: oc_current_user,
 			}]);
 			shareModel.set('itemType', 'folder');
 			listView.render();
@@ -175,6 +180,7 @@ describe('OC.Share.ShareDialogShareeListView', function () {
 				share_type: OC.Share.SHARE_TYPE_USER,
 				share_with: 'user1',
 				share_with_displayname: 'User One',
+				uid_owner: oc_current_user,
 				itemType: 'folder'
 			}]);
 			shareModel.set('itemType', 'folder');
@@ -192,6 +198,7 @@ describe('OC.Share.ShareDialogShareeListView', function () {
 				share_type: OC.Share.SHARE_TYPE_USER,
 				share_with: 'user1',
 				share_with_displayname: 'User One',
+				uid_owner: oc_current_user,
 				itemType: 'folder'
 			}]);
 			shareModel.set('itemType', 'folder');
