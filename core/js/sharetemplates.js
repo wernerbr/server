@@ -164,11 +164,11 @@ templates['sharedialoglinkshareview_popover_menu'] = template({"1":function(cont
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "<div class=\"popovermenu menu\">\n	<ul>\n		<li>\n			<button class=\"menuitem clipboardButton\" data-clipboard-text=\""
+  return "<div class=\"popovermenu menu\">\n	<ul>\n		<li>\n			<a href=\"#\" class=\"menuitem clipboardButton\" data-clipboard-text=\""
     + alias4(((helper = (helper = helpers.shareLinkURL || (depth0 != null ? depth0.shareLinkURL : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"shareLinkURL","hash":{},"data":data}) : helper)))
     + "\">\n				<span class=\"icon icon-clippy\" ></span>\n				<span>"
     + alias4(((helper = (helper = helpers.copyLabel || (depth0 != null ? depth0.copyLabel : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"copyLabel","hash":{},"data":data}) : helper)))
-    + "</span>\n			</button>\n		</li>\n		<li class=\"hidden linkTextMenu\">\n			<span class=\"menuitem icon-link-text\">\n				<input id=\"linkText-"
+    + "</span>\n			</a>\n		</li>\n		<li class=\"hidden linkTextMenu\">\n			<span class=\"menuitem icon-link-text\">\n				<input id=\"linkText-"
     + alias4(((helper = (helper = helpers.cid || (depth0 != null ? depth0.cid : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"cid","hash":{},"data":data}) : helper)))
     + "\" class=\"linkText\" type=\"text\" readonly=\"readonly\" value=\""
     + alias4(((helper = (helper = helpers.shareLinkURL || (depth0 != null ? depth0.shareLinkURL : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"shareLinkURL","hash":{},"data":data}) : helper)))
@@ -182,13 +182,8 @@ templates['sharedialoglinkshareview_popover_menu'] = template({"1":function(cont
     + "\" type=\"checkbox\" name=\"expirationDate\" class=\"expireDate checkbox\"\n				"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.hasExpireDate : depth0),{"name":"if","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + " "
-<<<<<<< HEAD
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.isExpirationEnforced : depth0),{"name":"if","hash":{},"fn":container.program(9, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "\" />\n				<label for=\"expireDate-"
-=======
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.isExpirationEnforced : depth0),{"name":"if","hash":{},"fn":container.program(8, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + " />\n				<label for=\"expireDate-"
->>>>>>> Migrate link shares to array
     + alias4(((helper = (helper = helpers.cid || (depth0 != null ? depth0.cid : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"cid","hash":{},"data":data}) : helper)))
     + "\">"
     + alias4(((helper = (helper = helpers.expireDateLabel || (depth0 != null ? depth0.expireDateLabel : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"expireDateLabel","hash":{},"data":data}) : helper)))
@@ -206,33 +201,23 @@ templates['sharedialoglinkshareview_popover_menu'] = template({"1":function(cont
     + alias4(((helper = (helper = helpers.cid || (depth0 != null ? depth0.cid : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"cid","hash":{},"data":data}) : helper)))
     + "\" class=\"datepicker\" type=\"text\" placeholder=\""
     + alias4(((helper = (helper = helpers.expirationDatePlaceholder || (depth0 != null ? depth0.expirationDatePlaceholder : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"expirationDatePlaceholder","hash":{},"data":data}) : helper)))
-<<<<<<< HEAD
-    + "\" value=\""
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.hasExpireDate : depth0),{"name":"if","hash":{},"fn":container.program(13, data, 0),"inverse":container.program(15, data, 0),"data":data})) != null ? stack1 : "")
-=======
     + "\"\n					value=\""
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.hasExpireDate : depth0),{"name":"if","hash":{},"fn":container.program(12, data, 0),"inverse":container.program(14, data, 0),"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.hasExpireDate : depth0),{"name":"if","hash":{},"fn":container.program(13, data, 0),"inverse":container.program(15, data, 0),"data":data})) != null ? stack1 : "")
     + "\" data-max-date=\""
     + alias4(((helper = (helper = helpers.maxDate || (depth0 != null ? depth0.maxDate : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"maxDate","hash":{},"data":data}) : helper)))
->>>>>>> Migrate link shares to array
     + "\" />\n			</span>\n			</li>\n		<li>\n			<a href=\"#\" class=\"share-add\">\n				<span class=\"icon-loading-small hidden\"></span>\n				<span class=\"icon icon-edit\"></span>\n				<span>"
     + alias4(((helper = (helper = helpers.addNoteLabel || (depth0 != null ? depth0.addNoteLabel : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"addNoteLabel","hash":{},"data":data}) : helper)))
     + "</span>\n				<input type=\"button\" class=\"share-note-delete icon-delete\">\n			</a>\n		</li>\n		<li class=\"share-note-form share-note-link "
-    + ((stack1 = helpers.unless.call(alias1,(depth0 != null ? depth0.hasNote : depth0),{"name":"unless","hash":{},"fn":container.program(10, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.unless.call(alias1,(depth0 != null ? depth0.hasNote : depth0),{"name":"unless","hash":{},"fn":container.program(11, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\">\n			<span class=\"menuitem icon-note\">\n				<textarea class=\"share-note\">"
     + alias4(((helper = (helper = helpers.shareNote || (depth0 != null ? depth0.shareNote : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"shareNote","hash":{},"data":data}) : helper)))
     + "</textarea>\n				<input type=\"submit\" class=\"icon-confirm share-note-submit\" value=\"\" id=\"add-note-"
     + alias4(((helper = (helper = helpers.shareId || (depth0 != null ? depth0.shareId : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"shareId","hash":{},"data":data}) : helper)))
     + "\" />\n				</span>\n		</li>\n"
-<<<<<<< HEAD
     + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.social : depth0),{"name":"each","hash":{},"fn":container.program(17, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "	</ul>\n</div>\n";
-=======
-    + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.social : depth0),{"name":"each","hash":{},"fn":container.program(16, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "		<li>\n			<a href=\"#\" class=\"unshare\"><span class=\"icon-loading-small hidden\"></span><span class=\"icon icon-delete\"></span><span>"
     + alias4(((helper = (helper = helpers.unshareLabel || (depth0 != null ? depth0.unshareLabel : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"unshareLabel","hash":{},"data":data}) : helper)))
     + "</span></a>\n		</li>\n	</ul>\n</div>\n";
->>>>>>> Migrate link shares to array
 },"useData":true});
 templates['sharedialoglinkshareview_popover_menu_pending'] = template({"1":function(container,depth0,helpers,partials,data) {
     var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;

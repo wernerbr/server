@@ -628,10 +628,13 @@
 		 * @returns {int}
 		 */
 		linkSharePermissions: function(shareId) {
+			var linkShares = this.get('linkShares');
+			var shareIndex = _.findIndex(linkShares, function(share) {return share.id === shareId})
+
 			if (!this.hasLinkShares()) {
 				return -1;
-			} else if (this.get('linkShares')[shareId]) {
-				return this.get('linkShares')[shareId].permissions;
+			} else if (linkShares.length > 0 && shareIndex !== -1) {
+				return linkShares[shareIndex].permissions;
 			}
 			return -1;
 		},
@@ -842,7 +845,7 @@
 						|| share.item_source === this.get('itemSource'));
 
 					if (isShareLink) {
-						/*
+						/**
 						 * Ignore reshared link shares for now
 						 * FIXME: Find a way to display properly
 						 */
@@ -862,17 +865,9 @@
 						} else {
 							link += OC.generateUrl('/s/') + share.token;
 						}
-						linkShare = {
-							isLinkShare: true,
-							id: share.id,
-							token: share.token,
-							password: share.share_with,
-							link: link,
-							permissions: share.permissions,
-							// currently expiration is only effective for link shares.
-							expiration: share.expiration,
-							stime: share.stime
-						};
+						linkShares.push(_.extend({}, share, {
+							password: share.share_with
+						}));
 
 						return share;
 					}

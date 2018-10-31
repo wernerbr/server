@@ -783,7 +783,7 @@ class ShareAPIController extends OCSController {
 			$publicUpload === null &&
 			$expireDate === null &&
 			$note === null &&
-			$label === null,
+			$label === null &&
 			$hideDownload === null
 		) {
 			throw new OCSBadRequestException($this->l->t('Wrong or no update parameter given'));

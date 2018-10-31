@@ -178,7 +178,10 @@
 		},
 
 		onHideDownloadChange: function() {
-			var $checkbox = this.$('.hideDownloadCheckbox');
+			var $element = $(event.target);
+			var $li = $element.closest('li[data-share-id]');
+			var shareId = $li.data('share-id');
+			var $checkbox = $li.find('.hideDownloadCheckbox');
 			$checkbox.siblings('.icon-loading-small').removeClass('hidden').addClass('inlineblock');
 
 			var hideDownload = false;
@@ -187,7 +190,16 @@
 			}
 
 			this.model.saveLinkShare({
-				hideDownload: hideDownload
+				hideDownload: hideDownload,
+				cid: shareId
+			}, {
+				success: function() {
+					$checkbox.siblings('.icon-loading-small').addClass('hidden').removeClass('inlineblock');
+				},
+				error: function(obj, msg) {
+					OC.Notification.showTemporary(t('core', 'Unable to toggle this option'));
+					$checkbox.siblings('.icon-loading-small').addClass('hidden').removeClass('inlineblock');
+				}
 			});
 		},
 
@@ -279,6 +291,14 @@
 			this.model.saveLinkShare({
 				permissions: permissions,
 				cid: shareId
+			}, {
+				success: function() {
+					$checkbox.siblings('.icon-loading-small').addClass('hidden').removeClass('inlineblock');
+				},
+				error: function(obj, msg) {
+					OC.Notification.showTemporary(t('core', 'Unable to toggle this option'));
+					$checkbox.siblings('.icon-loading-small').addClass('hidden').removeClass('inlineblock');
+				}
 			});
 		},
 
@@ -409,9 +429,6 @@
 			var passwordPlaceholderInitial = this.configModel.get('enforcePasswordForPublicLink')
 				? PASSWORD_PLACEHOLDER_MESSAGE : PASSWORD_PLACEHOLDER_MESSAGE_OPTIONAL;
 
-			var showHideDownloadCheckbox = !this.model.isFolder();
-			var hideDownload = this.model.get('linkShare').hideDownload;
-
 			var publicEditable =
 				!this.model.isFolder()
 				&& this.model.updatePermissionPossible();
@@ -446,8 +463,6 @@
 				copyLabel: t('core', 'Copy link'),
 				social: social,
 				urlLabel: t('core', 'Link'),
-				showHideDownloadCheckbox: showHideDownloadCheckbox,
-				hideDownload: hideDownload,
 				hideDownloadLabel: t('core', 'Hide download'),
 				enablePasswordLabel: t('core', 'Password protect'),
 				passwordLabel: t('core', 'Password'),
@@ -514,9 +529,15 @@
 			var $element = $(event.target);
 			var $li = $element.closest('li[data-share-id]');
 			var $menu = $li.find('.sharingOptionsGroup .popovermenu');
+			var shareId = $li.data('share-id');
+
+			var linkShares = this.model.get('linkShares');
+			var shareIndex = _.findIndex(linkShares, function(share) {return share.id === shareId})
+			
+			console.log(this, linkShares[shareIndex])
 
 			OC.showMenu(null, $menu);
-			this._menuOpen = $li.data('share-id');
+			this._menuOpen = shareId;
 		},
 
 		/**
@@ -620,9 +641,9 @@
 		 * @returns {Array}
 		 */
 		getShareeList: function() {
-			var universal = this.getShareProperties();
-
 			var shares = this.model.get('linkShares');
+
+			console.log(this, shares);
 
 			if(!this.model.hasLinkShares()) {
 				return [];
@@ -631,10 +652,9 @@
 			var list = [];
 			for(var index = 0; index < shares.length; index++) {
 				var share = this.getShareeObject(index);
-
 				// first empty {} is necessary, otherwise we get in trouble
 				// with references
-				list.push(_.extend({}, universal, share));
+				list.push(_.extend({}, share));
 			}
 
 			return list;
@@ -689,6 +709,9 @@
 				expireDate = moment(share.expiration, 'YYYY-MM-DD').format('DD-MM-YYYY');
 			}
 
+			var showHideDownloadCheckbox = !this.model.isFolder();
+			var hideDownload = share.hideDownload;
+
 			var maxDate = null;
 
 			if(hasExpireDate) {
@@ -709,7 +732,7 @@
 
 			return {
 				cid: share.id,
-				shareLinkURL: share.link,
+				shareLinkURL: share.url,
 				passwordPlaceholder: isPasswordSet ? PASSWORD_PLACEHOLDER : PASSWORD_PLACEHOLDER_MESSAGE,
 				isPasswordSet: isPasswordSet || isPasswordEnabledByDefault || isPasswordEnforced,
 				showPasswordCheckBox: showPasswordCheckBox,
@@ -720,7 +743,9 @@
 				expireDate: expireDate,
 				shareNote: share.note,
 				hasNote: share.note !== '',
-				maxDate: maxDate
+				maxDate: maxDate,
+				showHideDownloadCheckbox: showHideDownloadCheckbox,
+				hideDownload: hideDownload,
 			}
 		},
 
@@ -738,13 +763,6 @@
 				isPasswordEnforced: isPasswordEnforced,
 			}
 
-		},
-
-		getShareProperties: function() {
-			return {
-				linkShareLabel: t('core', 'Share link'),
-				linkShareEnableLabel: t('core', 'Enable'),
-			};
 		},
 
 		onUnshare: function(event) {
