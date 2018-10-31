@@ -1,19 +1,19 @@
 {{#if shareAllowed}}
 <ul id="shareLink" class="shareWithList">
-	<li>
-		<div class="avatar icon-public-white"></div>
-		<span class="username">Share link</span>
-		<span class="sharingOptionsGroup">
-			<span class="icon icon-add"></span>
-		</span>
-	</li>
+	{{#if nolinkShares}}
+		<li>
+			<div class="avatar icon-public-white"></div>
+			<span class="username">{{newShareLabel}}</span>
+			<span class="sharingOptionsGroup">
+				<span class="icon icon-add" title="{{newShareTitle}}"></span>
+				<span class="icon icon-loading-small hidden"></span>
+			</span>
+		</li>
+	{{/if}}
 	{{#each linkShares}}
 		<li data-share-id="{{cid}}">
 			<div class="avatar icon-public-white"></div><span class="username" title="{{linkShareLabel}}">{{linkShareLabel}}</span>
 			<span class="sharingOptionsGroup">
-				<span class="shareOption">
-					{{linkShareEnableLabel}}
-				</span>
 				<div class="share-menu" tabindex="0"><span class="icon icon-more"></span>
 					{{#if showPending}}
 						{{{pendingPopoverMenu}}}

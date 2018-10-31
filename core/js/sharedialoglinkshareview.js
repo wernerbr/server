@@ -68,6 +68,8 @@
 			'click .share-note-submit': 'updateNote',
 			// remove
 			'click .unshare': 'onUnshare',
+			// new share
+			'click .icon-add': 'newShare',
 		},
 
 		initialize: function(options) {
@@ -142,11 +144,35 @@
 			});
 		},
 
+		newShare: function() {
+			var self = this;
+			var $loading = this.$el.find('.icon-loading-small').eq(0);
+			if(!$loading.hasClass('hidden')) {
+				// in process
+				return false;
+			}
+			// hide all icons and show loading
+			this.$el.find('.icon').addClass('hidden');
+			$loading.removeClass('hidden');
+
+			this.model.saveLinkShare({}, {
+				success: function() {
+					$loading.addClass('hidden');
+					self.$el.find('.icon').removeClass('hidden');
+					self.render();
+				},
+				error: function(obj, msg) {
+					OC.Notification.showTemporary(t('core', 'Unable to create a link share'));
+					$loading.addClass('hidden');
+					self.$el.find('.icon').removeClass('hidden');
+				}
+			})
+		},
+
 		onLinkTextClick: function(event) {
 			var $element = $(event.target);
 			var $li = $element.closest('li[data-share-id]');
 			var $el = $li.find('.linkText');
-			console.log($element);
 			$el.focus();
 			$el.select();
 		},
@@ -403,8 +429,6 @@
 					newWindow: model.get('newWindow')
 				});
 			});
-
-			var defaultExpireDays = this.configModel.get('defaultExpireDate');
 			var isExpirationEnforced = this.configModel.get('isDefaultExpireDateEnforced');
 			
 			// what if there is another date picker on that page?
@@ -448,6 +472,7 @@
 				defaultExpireDate: moment().add(1, 'day').format('DD-MM-YYYY'), // Can't expire today
 				addNoteLabel: t('core', 'Note to recipient'),
 				unshareLabel: t('core', 'Unshare'),
+				newShareLabel: t('core', 'New share link'),
 			};
 
 			var pendingPopoverBase = {
@@ -467,10 +492,12 @@
 				}
 			}
 
-			console.log(linkShares);
 			this.$el.html(linkShareTemplate({
 				linkShares: linkShares,
-				shareAllowed: true		
+				shareAllowed: true,
+				nolinkShares: linkShares.length === 0,
+				newShareLabel: t('core', 'Share link'),
+				newShareTitle: t('core', 'New share link'),
 			}));
 
 			this.delegateEvents();
@@ -574,7 +601,7 @@
 			$(expirationDatePicker).datepicker({
 				dateFormat : 'dd-mm-yy',
 				onSelect: function (expireDate) {
-					self.setExpirationDate(expireDate);
+					self.setExpirationDate(expireDate, shareId);
 				},
 				maxDate: maxDate
 			});
@@ -583,8 +610,8 @@
 
 		},
 
-		setExpirationDate: function(expireDate) {
-			this.model.saveLinkShare({expireDate: expireDate});
+		setExpirationDate: function(expireDate, shareId) {
+			this.model.saveLinkShare({expireDate: expireDate, cid: shareId});
 		},
 
 		/**
@@ -624,8 +651,7 @@
 			return _.extend({}, share, {
 				cid: share.id,
 				shareAllowed: true,
-				linkShareLabel: t('core', 'Share link'),
-				linkShareEnableLabel: t('core', 'Enable'),
+				linkShareLabel: share.label !== '' ? share.label : t('core', 'Share link'),
 				popoverMenu: {},
 				pendingPopoverMenu: {},
 				showPending: this.showPending
@@ -654,6 +680,7 @@
 			var isPasswordEnforced = this.configModel.get('enforcePasswordForPublicLink');
 			var showPasswordCheckBox = !this.configModel.get('enforcePasswordForPublicLink') || !share.password;
 			var isExpirationEnforced = this.configModel.get('isDefaultExpireDateEnforced');
+			var defaultExpireDays = this.configModel.get('defaultExpireDate');
 			var hasExpireDate = !!share.expiration || isExpirationEnforced;
 			var hasExpireDate = false;
 
@@ -743,6 +770,7 @@
 			self.model.removeShare(shareId)
 				.done(function() {
 					$li.remove();
+					self.render()
 				})
 				.fail(function() {
 					$loading.addClass('hidden');
@@ -750,7 +778,6 @@
 				});
 			return false;
 		},
-
 
 
 	});
