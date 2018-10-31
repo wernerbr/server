@@ -333,7 +333,7 @@
 			var $form = $menu.next('li.share-note-form');
 
 			// show elements
-			$menu.find('.share-note-delete').toggle();
+			$menu.find('.share-note-delete').toggleClass('hidden');
 			$form.toggleClass('hidden');
 			$form.find('textarea').focus();
 		},
@@ -351,7 +351,7 @@
 			$form.find('.share-note').val('');
 
 			$form.addClass('hidden');
-			$menu.find('.share-note-delete').hide();
+			$menu.find('.share-note-delete').addClass('hidden');
 
 			self.sendNote('', shareId, $menu);
 		},
