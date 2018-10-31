@@ -552,6 +552,15 @@
 
 			OC.showMenu(null, $menu);
 			this._menuOpen = shareId;
+
+			// focus the password if not set and enforced
+			var isPasswordEnabledByDefault = this.configModel.get('enableLinkPasswordByDefault') === true;
+			var haspassword = $menu.find('.linkPassText').val() !== '';
+
+			console.log(isPasswordEnabledByDefault, haspassword)
+			if (!haspassword && isPasswordEnabledByDefault) {
+				$menu.find('.linkPassText').focus();
+			}
 		},
 
 		/**
